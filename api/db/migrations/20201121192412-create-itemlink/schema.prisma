@@ -1,0 +1,38 @@
+datasource DS {
+  // optionally set multiple providers
+  // example: provider = ["sqlite", "postgresql"]
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+// Define your own datamodels here and run `yarn redwood db save` to create
+// migrations for them.
+// TODO: Please remove the following example:
+//   updated    Int     @id @default(autoincrement())
+//  email String  @unique
+//  name  String?
+
+model itemLink {
+  id          Int      @id @default(autoincrement())
+  updated     DateTime @default(now())
+  created     DateTime @default(now())
+  url         String   @unique
+  author      String   @default("Unknown")
+  title       String   @default("Untitled")
+  rendered    Int      @default(0)
+  clicked     Int      @default(0)
+  contentType String   @default("Unknown")
+}
+
+model Contact {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}

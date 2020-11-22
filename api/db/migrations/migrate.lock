@@ -1,0 +1,5 @@
+# Prisma Migrate lockfile v1
+
+20201121192304-migration
+20201121192412-create-itemlink
+20201121192636-rename-itemlink
