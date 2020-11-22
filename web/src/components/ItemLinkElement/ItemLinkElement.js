@@ -1,5 +1,5 @@
 import {Redirect, routes} from '@redwoodjs/router'
-import './ItemLinkElement.css'
+//import './ItemLinkElement.css'
 const ItemLinkElement = (props) => {
   let setURLParams = function () {
     // this expects at least 2 parameters, sometimes 3
