@@ -16,7 +16,6 @@ const HomePage = () => {
     {symbol:"*", value:"in"}
   ];
   let querySeperators = [
-    '^OR',
     '^'
   ];
   let sevenDaysAgo = new Date();
@@ -32,10 +31,11 @@ const HomePage = () => {
         var value = query.split(operator.symbol)[1];
         console.log('value',value);
         var date = new Date(value);
+        if(isNaN(parseFloat(value))==false){
+          value = parseFloat(value);
+        }
         if(date instanceof Date && !isNaN(date.valueOf())){
           value = date.toISOString();
-        } else if(isNaN(parseFloat(value))==false){
-          value = parseFloat(value);
         }
         if(field.indexOf('!') < 0){
           var queryLineObj = {}
@@ -47,10 +47,10 @@ const HomePage = () => {
       }
     })
   }
-  //"{\"AND\":[{\"author\":{\"equals\":\"Beth_Carlson\"}}]}"
   let queryItems = [];
   querySeperators.forEach((seperator)=>{
     var queries = urlQueries.split(seperator);
+    console.log('queries.length', queries.length)
     if(queries.length>1){
       queries.forEach((query, index)=>{
         setQueries(query);
