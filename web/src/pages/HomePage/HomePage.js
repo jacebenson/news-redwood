@@ -80,9 +80,23 @@ const HomePage = () => {
   return (
     <>
       <SiteLayout>
-        <h1>HomePage</h1>
-      Loading {queryObj}
+      <hr></hr>
+        <div className="container">
+        <form id="news-search" className="form-inline">
+          <label className="sr-only" htmlFor="searchtext">Search</label>
+          <div className="input-group col-md-10">
+            <input type="text" className="form-control" id="searchtext" placeholder="Search (looks for type, site, author, or title containing this)" />
+          </div>
+          <div className="col-md-2">
+          <button type="button" id="submitquery" className="btn btn-primary">Submit</button>
+          </div>
+
+        </form>
+
+        {queryObj}
+        <hr/>
         <ItemLinksFilteredCell filter={queryObj} />
+        </div>
       </SiteLayout>
     </>
   )
