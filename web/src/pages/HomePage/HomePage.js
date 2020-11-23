@@ -80,8 +80,6 @@ const HomePage = () => {
   return (
     <>
       <SiteLayout>
-      <hr></hr>
-        <div className="container">
         <form id="news-search" className="form-inline">
           <label className="sr-only" htmlFor="searchtext">Search</label>
           <div className="input-group col-md-10">
@@ -96,7 +94,7 @@ const HomePage = () => {
         {queryObj}
         <hr/>
         <ItemLinksFilteredCell filter={queryObj} />
-        </div>
+
       </SiteLayout>
     </>
   )

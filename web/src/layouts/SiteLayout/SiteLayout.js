@@ -4,57 +4,12 @@ import patreonImage from '../../../../web/public/patron.png';
 import "../../../../node_modules/bootstrap/dist/css/bootstrap.min.css"
 import "./site.css"
 const SiteLayout = ({ children }) => {
-  const { logIn } = useAuth()
-  /**
-   *
-   * <header>
-            <div className="container">
-                <div className="row">
-                    <div className="col-12 col-sm-12 nav-column clearfix">
-                        <nav id="menu" className="d-none d-lg-block">
-                            <ul>
-                                <li><a href="https://jace.pro/post">Posts</a></li>
-                                <li><a href="https://jace.pro/talk">Talks</a></li>
-                                <li><a href="https://jace.pro/resources">Resources</a></li>
-                                <li className="current-menu-item"><a href="https://news.jace.pro">News</a></li>
-                                <li><a className="nav-link" href="https://www.patreon.com/bePatron?u=23597006"><img src="/assets/img/patron.png" alt="Become a Patron!" style="height:50px"></a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal -->
-             <div className="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel">
-              <div className="modal-dialog modal-lg" role="document">
-                <div className="modal-content">
-                  <div className="modal-header">Search my posts
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-
-                  </div>
-                  <div className="modal-body">
-
-                    <form className="navbar-form " role="search" id="search-form">
-
-
-                      <div className="input-group">
-                        <input id="searchText" type="text" className="form-control" placeholder="" aria-label="" aria-describedby="search" autofocus="">
-                            <div className="input-group-append">
-                                <button className="btn btn-success" type="button" onclick="searchPosts()">Search</button>
-                            </div>
-                        </div>
-                    </form>
-                    <div id="searchResults"></div>
-
-                  </div>
-
-
-                </div>
-              </div>
-            </div>
-        </header>
-   */
+  const { logIn, logOut, isAuthenticated, currentUser } = useAuth()
   return (
+
     <div>
+
+
     <header>
             <div className="container">
                 <div className="row">
@@ -65,9 +20,10 @@ const SiteLayout = ({ children }) => {
                                 <li><a href="https://jace.pro/talk">Talks</a></li>
                                 <li><a href="https://jace.pro/resources">Resources</a></li>
                                 <li className="current-menu-item"><a href="https://news.jace.pro">News</a></li>
-                                <li><button onClick={logIn}>
-            Log In
-          </button></li>
+                                <li>
+                                <button onClick={isAuthenticated ? logOut : logIn}>              {isAuthenticated ? 'Log Out' : 'Log In'}</button>
+                                </li>
+                                {isAuthenticated && <li>{currentUser.email}</li>}
                                 <li><a className="nav-link" href="https://www.patreon.com/bePatron?u=23597006">PATREON</a></li>
                             </ul>
                         </nav>
@@ -75,8 +31,14 @@ const SiteLayout = ({ children }) => {
                 </div>
             </div>
     </header>
+    <hr></hr>
+    <div className="container">
     <main>{children}</main>
+
+</div>
     <footer>
+
+
     <div className="footer-top">
         <div className="container">
             <div className="row">
