@@ -5,10 +5,9 @@ const ItemLinksPage = () => {
   return (
 
     <SiteLayout>
-    <ItemLinksLayout>
-      <ItemLinksCell />
-    </ItemLinksLayout>
-
+      <ItemLinksLayout>
+        <ItemLinksCell />
+      </ItemLinksLayout>
     </SiteLayout>
   )
 }

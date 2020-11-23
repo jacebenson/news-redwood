@@ -9,10 +9,18 @@ export const allItems = ({ filter }) => {
   //console.log(JSON.stringify(filter,'',' '));
   filter = JSON.parse(filter);
   return db.itemLink.findMany({
-    where: filter
+    where: filter,
+    orderBy: { created: "desc"}
   })
 }
-
+export const allItemsJSON = ({ filter }) => {
+  //console.log(JSON.stringify(filter,'',' '));
+  //filter = JSON.parse(filter);
+  return db.itemLink.findMany({
+    where: filter,
+    orderBy: { created: "desc"}
+  })
+}
 export const itemLink = ({ id }) => {
   return db.itemLink.findOne({
     where: { id },

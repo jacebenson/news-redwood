@@ -10,10 +10,10 @@ export const schema = gql`
     clicked: Int!
     contentType: String!
   }
-
   type Query {
     itemLinks: [ItemLink!]!
-    allItems(filter: String!): [ItemLink!]!
+    allItems(filter: String!, orderBy: ItemLinkOrderByInput): [ItemLink!]!
+    allItemsJSON(filter: JSON!): [ItemLink!]!
     itemLink(id: Int!): ItemLink
   }
 

@@ -7,6 +7,7 @@ import ItemLinkElement from 'src/components/ItemLinkElement';
  */
 /*
 export const beforeQuery = (props) => {
+  console.log('itemlinkfilteredcell beforequery', props)
   console.log('props',props)
   return {
     variables: props,
@@ -29,33 +30,117 @@ query ITEM_LINKS($filter: String!) {
   }
 }
 `
+let setURLParams = function () {
+  // this expects at least 2 parameters, sometimes 3
+  // if 2, column = value
+  // if 3, column operator value
+  var args = Array.prototype.slice.call(arguments);
+  //console.log(args);
 
+
+  var column = args[0];
+  var operator = (function () {
+    if (args.length === 2) {
+      return '=';
+    } else {
+      return args[1]
+    }
+  })();
+  var value = (function () {
+    if (args.length === 2) {
+      return args[1];
+    } else {
+      return args[2]
+    }
+  })();
+  //console.log(column, operator, value)
+  let queryString = window.location.search;
+  let urlParams = new URLSearchParams(queryString);
+  var urlQuery = urlParams.get('q') || urlParams.get('query') || '';
+  //console.log('q', urlQuery);
+  var queryArr = urlQuery.split('^');
+  var output = urlQuery.split('^');
+  var found = false;
+  queryArr.forEach(function (query, index) {
+    //now split by operators
+    var operators = ['=', '!=', '>', '>=', '<', '<='];
+    operators.forEach(function (op) {
+      var queryParts = query.split(op);
+      //console.log(op)
+      if (query.includes(op)) {
+        if (queryParts[0] === column) {
+          found = true;
+          //console.log(`matched urlparam(${query.split(op)[0]}) to column(${column})`)
+          output[index] = `${column}${operator}${value}`;
+          return `${column}${operator}${value}`
+        }
+      }
+    })
+    //console.log(output);
+  });
+  if (!found) {
+    output.push(`${column}${operator}${value}`)
+  }
+  if (output[0] == "") { output = [`${column}${operator}${value}`]; }
+  if (output.length > 0) {
+    output = output.join('^');
+  }
+  //console.log('output', output);
+  urlParams.set('q', output);
+  //history.replaceState(null, '', '?' + urlParams + location.hash)
+  window.location.href = '?' + urlParams.toString();
+  return output;
+}
+
+let searchForm = (
+<><form id="news-search" className="form-inline">
+        <label className="sr-only" htmlFor="searchtext">Search</label>
+        <div className="input-group col-md-10">
+          <input type="text" className="form-control" id="searchtext" placeholder="Search (looks for title containing this)" onKeyPress={e => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              setURLParams('title', '~', document.getElementById('searchtext').value)
+            }
+          }} />
+        </div>
+        <div className="col-md-2">
+          <button onClick={() => { setURLParams('title', '~', document.getElementById('searchtext').value) }} type="button" id="submitquery" className="btn btn-primary">Submit</button>
+        </div>
+
+      </form></>
+)
 
 export const Loading = () => <div>Loading...</div>
 
-export const Empty = () => <div>Empty</div>
+export const Empty = ({filter}) => <div>{filter}{searchForm}Empty</div>
 
 export const Failure = ({ error }) => (<div>Error: {error.message}</div>)
 
 export const Success = ({ allItems }) => {
-  let rows = allItems.map((item,index)=>(
-      <tr key={item.id}>
-        <td><time>{item.created.split('T')[0]}</time></td>
-        <td><Link to={item.url}>{item.title}</Link></td>
-        <td><ItemLinkElement element="author" item={item}></ItemLinkElement></td>
-      </tr>
-  ))
-  return (<table>
-  <thead>
-    <tr>
-      <td>Date</td>
-      <td>Post</td>
-      <td>Author</td>
+  let rows = allItems.map((item, index) => (
+    <tr key={item.id}>
+      <td>{item.contentType}</td>
+      <td><time>{item.created.split('T')[0]}</time></td>
+      <td><Link to={item.url}>{item.title}</Link></td>
+      <td><ItemLinkElement element="author" item={item}></ItemLinkElement></td>
     </tr>
-  </thead>
-    <tbody>
-    {rows}
-    </tbody>
-  </table>)
+  ))
+  return (
+    <div>
+      {searchForm}
+      <table>
+        <thead>
+          <tr>
+            <td></td>
+            <td>Date</td>
+            <td>Post</td>
+            <td>Author</td>
+          </tr>
+        </thead>
+        <tbody>
+          {rows}
+        </tbody>
+      </table>
+    </div>)
   //return JSON.stringify(allItems)
 }

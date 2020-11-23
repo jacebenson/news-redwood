@@ -75,22 +75,12 @@ const HomePage = () => {
     queryObj[field] = { equals: value };
   }
   */
-  queryObj = JSON.stringify({AND: queryItems});
-  console.log(queryObj);
+ queryObj = JSON.stringify({AND: queryItems});
+ //queryObj = {"AND": queryItems};
+  console.log('queryObj', queryObj);
   return (
     <>
       <SiteLayout>
-        <form id="news-search" className="form-inline">
-          <label className="sr-only" htmlFor="searchtext">Search</label>
-          <div className="input-group col-md-10">
-            <input type="text" className="form-control" id="searchtext" placeholder="Search (looks for type, site, author, or title containing this)" />
-          </div>
-          <div className="col-md-2">
-          <button type="button" id="submitquery" className="btn btn-primary">Submit</button>
-          </div>
-
-        </form>
-
         {queryObj}
         <hr/>
         <ItemLinksFilteredCell filter={queryObj} />
