@@ -1,6 +1,9 @@
 .itemLinkElementMenu {
   float: right;
 }
+.itemLinkElementMenu:hover {
+  cursor: pointer;
+}
 .itemLinkElementValue {
   float: left;
 }

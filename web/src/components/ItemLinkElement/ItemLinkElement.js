@@ -2,6 +2,7 @@ import {Redirect, routes} from '@redwoodjs/router'
 //import './ItemLinkElement.css'
 const ItemLinkElement = (props) => {
   let setURLParams = function () {
+
     // this expects at least 2 parameters, sometimes 3
     // if 2, column = value
     // if 3, column operator value

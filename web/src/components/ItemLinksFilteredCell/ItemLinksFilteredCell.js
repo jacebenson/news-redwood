@@ -56,6 +56,7 @@ let setURLParams = function () {
   //console.log(column, operator, value)
   let queryString = window.location.search;
   let urlParams = new URLSearchParams(queryString);
+  urlParams.delete('q');
   var urlQuery = urlParams.get('q') || urlParams.get('query') || '';
   //console.log('q', urlQuery);
   var queryArr = urlQuery.split('^');
@@ -106,8 +107,8 @@ let searchForm = (
         <div className="col-md-2">
           <button onClick={() => { setURLParams('title', '~', document.getElementById('searchtext').value) }} type="button" id="submitquery" className="btn btn-primary">Submit</button>
         </div>
-
-      </form></>
+      </form>
+      <span></span></>
 )
 
 export const Loading = () => <div>Loading...</div>
@@ -118,20 +119,18 @@ export const Failure = ({ error }) => (<div>Error: {error.message}</div>)
 
 export const Success = ({ allItems }) => {
   let rows = allItems.map((item, index) => (
-    <tr key={item.id}>
-      <td>{item.contentType}</td>
+    <tr key={item.id} scope="row">
       <td><time>{item.created.split('T')[0]}</time></td>
-      <td><Link to={item.url}>{item.title}</Link></td>
+      <td><a href={item.url}>{item.title}</a></td>
       <td><ItemLinkElement element="author" item={item}></ItemLinkElement></td>
     </tr>
   ))
   return (
     <div>
       {searchForm}
-      <table>
+      <table className="table table-hover">
         <thead>
           <tr>
-            <td></td>
             <td>Date</td>
             <td>Post</td>
             <td>Author</td>
