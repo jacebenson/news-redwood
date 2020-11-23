@@ -12,7 +12,7 @@ export const schema = gql`
   }
   type Query {
     itemLinks: [ItemLink!]!
-    allItems(filter: String!, orderBy: ItemLinkOrderByInput): [ItemLink!]!
+    allItems(filter: String!): [ItemLink!]!
     allItemsJSON(filter: JSON!): [ItemLink!]!
     itemLink(id: Int!): ItemLink
   }
