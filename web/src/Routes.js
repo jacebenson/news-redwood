@@ -14,6 +14,10 @@ const Routes = () => {
     <Router>
       <Route path="/" page={HomePage} name="home" />
       <Private unauthenticated="home">
+        <Route path="/admin/feeds/new" page={NewFeedPage} name="newFeed" />
+        <Route path="/admin/feeds/{id:Int}/edit" page={EditFeedPage} name="editFeed" />
+        <Route path="/admin/feeds/{id:Int}" page={FeedPage} name="feed" />
+        <Route path="/admin/feeds" page={FeedsPage} name="feeds" />
         <Route path="/admin/item-links/new" page={NewItemLinkPage} name="newItemLink" />
         <Route path="/admin/item-links/{id:Int}/edit" page={EditItemLinkPage} name="editItemLink" />
         <Route path="/admin/item-links/{id:Int}" page={ItemLinkPage} name="itemLink" />
