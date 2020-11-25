@@ -10,6 +10,7 @@ export const schema = gql`
   type Query {
     feeds: [Feed!]!
     feed(id: Int!): Feed
+    pullFeed(id: Int!, url: String!): Feed
   }
 
   input CreateFeedInput {
