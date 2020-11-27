@@ -1,7 +1,6 @@
 import { db } from 'src/lib/db'
-import fetch  from 'node-fetch'
-import Feed from 'rss-to-json'
-
+import rssParser from 'rss-parser'
+import pullFeed from './rules/pullFeed';
 import { requireAuth } from 'src/lib/auth'
 
 export const feeds = () => {
@@ -33,82 +32,60 @@ export const deleteFeed = ({ id }) => {
   })
 }
 
-export const pullFeed = async ({ id, url }) => {
-  //requireAuth()
-  console.log(url);
-  db.itemLink.create({
+export const pullFeed2 = async ({ id }) => {
+  let theFeed = await db.feed.update({
     data: {
-
-      updated: new Date(),
-      created: new Date(),
-      url: "asdf",
-      author: "asdf",
-      title: "feed.title",
-      rendered: 0,
-      clicked: 0,
-      contentType: 'fromgraphql'
-    }
+      lastRun: new Date()
+    },
+    where: { id },
   })
-  const response = await Feed.load(url)
-  var updated = 0;
-  response.items.length = 1;
-    var items = response.items.map((feed, index)=>{
-      var item = {
-
+  console.log('theFeed', theFeed)
+  let getFeed = async function (feedObj) {
+    let parser = new rssParser()
+    console.log('pulling', feedObj.url);
+    const response = await parser.parseURL(feedObj.url)
+    return response;
+  }
+  async function successCallback(result) {
+    await db.itemLink.create({
+      data: {
         updated: new Date(),
-        created: new Date(feed.created),
-        url: feed.url,
-        author: "?",
-        title: feed.title,
+        created: new Date(),
+        url: "item.link",
+        author: theFeed.name,
+        title: "item.title",
         rendered: 0,
         clicked: 0,
-        contentType: 'fromgraphql'
+        contentType: "fromgraphql"
       }
-      console.log('trying to insert', item);
-      /**
-    updated: DateTime!
-    created: DateTime!
-    url: String!
-    author: String!
-    title: String!
-    rendered: Int!
-    clicked: Int!
-    contentType: String!
-       */
-
+    }).then((success)=>{console.log('db insert success', success)})
+    result.items.length = 1;
+    console.log("Success", result);
+    result.items.forEach((item) => {
+      var mappedItem = {
+        updated: new Date(item.isoDate),
+        created: new Date(),
+        url: item.link,
+        author: theFeed.name,
+        title: item.title,
+        rendered: 0,
+        clicked: 0,
+        contentType: "fromgraphql"
+      }
+      console.log('trying to insert', mappedItem)
       db.itemLink.create({
-        data: item
-      }).then((item)=>{
-        console.log(item);
-//updated++
+        data: mappedItem
       })
-      if(index === (response.items.length-1)){
-        return {
-          id: id,
-          url: url,
-          created: new Date(),
-          lastRun: new Date(),
-          name: response.items.length
-        }
-      }
     })
-/**
- * Query
- * query FIND_FEED_BY_ID($id: Int!, $url: String!) {
-  pullFeed(id: $id, url: $url) {
-    id
-    name
-    url
-    created
-    lastRun
+    return "Hello"
   }
-}
-// variables
-{
-  "id": 1,
-  "url": "https://andrew.alburydor.com/posts/index.xml"
-}
-//TODO try rss-parser instead
- */
 
+  function failureCallback(error) {
+    console.error("Error: " + error);
+    console.log(error);
+  }
+  let output = getFeed(theFeed).then(successCallback, failureCallback)
+  return output;
+}
+export const pullFeed = ({ id, url }) => {
 }
