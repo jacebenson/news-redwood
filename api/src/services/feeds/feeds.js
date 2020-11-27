@@ -87,5 +87,3 @@ export const pullFeed2 = async ({ id }) => {
   let output = getFeed(theFeed).then(successCallback, failureCallback)
   return output;
 }
-export const pullFeed = ({ id, url }) => {
-}

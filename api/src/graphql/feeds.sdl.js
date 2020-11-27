@@ -30,7 +30,6 @@ export const schema = gql`
     createFeed(input: CreateFeedInput!): Feed!
     updateFeed(id: Int!, input: UpdateFeedInput!): Feed!
     deleteFeed(id: Int!): Feed!
-    pullFeed(id: Int!, url: String!): Feed!
     pullFeed2(id: Int!): Feed!
   }
 `
