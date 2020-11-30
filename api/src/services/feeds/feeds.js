@@ -46,26 +46,27 @@ export const pullFeed2 = async ({ id }) => {
     const response = await parser.parseURL(feedObj.url)
     return response;
   }
-  async function successCallback(result) {
-    await db.itemLink.create({
+  function successCallback(result) {
+    var now = new Date()
+    /*await db.itemLink.create({
       data: {
-        updated: new Date(),
-        created: new Date(),
-        url: "item.link",
+        updated: now,
+        created: now,
+        url: "https://example.com?date=" + now.toISOString(),
         author: theFeed.name,
         title: "item.title",
         rendered: 0,
         clicked: 0,
         contentType: "fromgraphql"
       }
-    }).then((success)=>{console.log('db insert success', success)})
+    }).then((success)=>{console.log('db insert success', success)})*/
     result.items.length = 1;
     console.log("Success", result);
     result.items.forEach((item) => {
       var mappedItem = {
         updated: new Date(item.isoDate),
         created: new Date(),
-        url: item.link,
+        url: item.link + "&date...=" + now.toISOString(),
         author: theFeed.name,
         title: item.title,
         rendered: 0,
@@ -77,7 +78,8 @@ export const pullFeed2 = async ({ id }) => {
         data: mappedItem
       })
     })
-    return "Hello"
+    //return "Hello"
+    return theFeed
   }
 
   function failureCallback(error) {

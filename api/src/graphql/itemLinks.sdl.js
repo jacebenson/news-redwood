@@ -43,5 +43,6 @@ export const schema = gql`
     createItemLink(input: CreateItemLinkInput!): ItemLink!
     updateItemLink(id: Int!, input: UpdateItemLinkInput!): ItemLink!
     deleteItemLink(id: Int!): ItemLink!
+    pullLinks(id: Int!): ItemLink!
   }
 `
