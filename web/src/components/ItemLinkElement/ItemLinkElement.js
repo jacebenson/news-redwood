@@ -1,6 +1,8 @@
-import {Redirect, routes} from '@redwoodjs/router'
+import { Redirect, routes } from '@redwoodjs/router'
+import { useAuth } from '@redwoodjs/auth'
 //import './ItemLinkElement.css'
 const ItemLinkElement = (props) => {
+  const { logIn, logOut, isAuthenticated } = useAuth()
   let setURLParams = function () {
 
     // this expects at least 2 parameters, sometimes 3
@@ -12,18 +14,18 @@ const ItemLinkElement = (props) => {
 
     var column = args[0];
     var operator = (function () {
-        if (args.length === 2) {
-            return '=';
-        } else {
-            return args[1]
-        }
+      if (args.length === 2) {
+        return '=';
+      } else {
+        return args[1]
+      }
     })();
     var value = (function () {
-        if (args.length === 2) {
-            return args[1];
-        } else {
-            return args[2]
-        }
+      if (args.length === 2) {
+        return args[1];
+      } else {
+        return args[2]
+      }
     })();
     //console.log(column, operator, value)
     let queryString = window.location.search;
@@ -33,41 +35,45 @@ const ItemLinkElement = (props) => {
     var queryArr = urlQuery.split('^');
     var output = urlQuery.split('^');
     var found = false;
-    queryArr.forEach(function(query, index){
-        //now split by operators
-        var operators = ['=','!=','>','>=','<','<='];
-        operators.forEach(function(op){
-            var queryParts = query.split(op);
-            //console.log(op)
-            if(query.includes(op)){
-                if(queryParts[0] === column){
-                    found = true;
-                    //console.log(`matched urlparam(${query.split(op)[0]}) to column(${column})`)
-                    output[index] = `${column}${operator}${value}`;
-                    return `${column}${operator}${value}`
-                }
-            }
-        })
-        //console.log(output);
+    queryArr.forEach(function (query, index) {
+      //now split by operators
+      var operators = ['=', '!=', '>', '>=', '<', '<='];
+      operators.forEach(function (op) {
+        var queryParts = query.split(op);
+        //console.log(op)
+        if (query.includes(op)) {
+          if (queryParts[0] === column) {
+            found = true;
+            //console.log(`matched urlparam(${query.split(op)[0]}) to column(${column})`)
+            output[index] = `${column}${operator}${value}`;
+            return `${column}${operator}${value}`
+          }
+        }
+      })
+      //console.log(output);
     });
-    if(!found){
-        output.push(`${column}${operator}${value}`)
+    if (!found) {
+      output.push(`${column}${operator}${value}`)
     }
-    if(output[0] == ""){output = [`${column}${operator}${value}`];}
-    if(output.length>0){
-        output = output.join('^');
+    if (output[0] == "") { output = [`${column}${operator}${value}`]; }
+    if (output.length > 0) {
+      output = output.join('^');
     }
     //console.log('output', output);
-    urlParams.set('q',output);
+    urlParams.set('q', output);
     //history.replaceState(null, '', '?' + urlParams + location.hash)
     window.location.href = '?' + urlParams.toString();
     return output;
-}
+  }
+
+  let gotoURL = function (path) {
+    window.location.href = window.location.host + path;
+  }
 
   let value = props.item[props.element];
   let field = props.element;
   let menuId = props.item.id + '-' + field;
-  let toggleMenu = function(){
+  let toggleMenu = function () {
     console.log(props)
     console.log(props.item[props.element])
     console.log('getting element with ', menuId);
@@ -75,15 +81,20 @@ const ItemLinkElement = (props) => {
     console.log('menu element', menu)
     menu.classList.toggle('hidden');
   }
-  let searchWith = function(field, value){
+  let searchWith = function (field, value) {
     setURLParams(field, value);
     return <Redirect to={routes.home()} />
   }
-  let searchWithOut = function(field, value){
+  let searchWithOut = function (field, value) {
     setURLParams(field, '!=', value);
-
   }
-  let clearAll = function(field, value){
+  let editEntry = function () {
+    window.location.href = window.location.origin + "/admin/item-links/" + props.item.id;
+  }
+  let deleteEntry = function (field, value) {
+    setURLParams(field, '!=', value);
+  }
+  let clearAll = function (field, value) {
     urlParams.delete('q')
     history.replaceState(null, '', '?' + urlParams + location.hash)
     window.location.href = '?' + urlParams.toString();
@@ -91,14 +102,16 @@ const ItemLinkElement = (props) => {
   return (
     <div>
       <span className="itemLinkElementValue">{value}</span>
-      <span onClick={()=>toggleMenu()} className="itemLinkElementMenu">☰</span>
+      <span onClick={() => toggleMenu()} className="itemLinkElementMenu">☰</span>
       <div id={props.item.id + '-' + field} className="context-menu hidden" >
-		<ul>
-			<li onClick={()=>searchWith(field, value)}>Show Matching</li>
-			<li onClick={()=>searchWithOut(field, value)}>Show non-matching</li>
-			<li onClick={()=>clearAll()}>Clear All Filters</li>
-		</ul>
-	</div>
+        <ul>
+          {isAuthenticated && <li onClick={() => editEntry()}>Edit Entry</li>}
+          {isAuthenticated && <li onClick={() => deleteEntry()}>Delete Entry</li>}
+          <li onClick={() => searchWith(field, value)}>Show Matching</li>
+          <li onClick={() => searchWithOut(field, value)}>Show non-matching</li>
+          <li onClick={() => clearAll()}>Clear All Filters</li>
+        </ul>
+      </div>
     </div>
   )
 }

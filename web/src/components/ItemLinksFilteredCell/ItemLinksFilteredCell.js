@@ -113,20 +113,38 @@ let searchForm = (
 
 export const Loading = () => <div>Loading...</div>
 
-export const Empty = ({filter}) => <div>{filter}{searchForm}Empty</div>
+export const Empty = ({filter}) => <div>{searchForm}No Results found</div>
 
 export const Failure = ({ error }) => (<div>Error: {error.message}</div>)
 
 export const Success = ({ allItems }) => {
-  let rows = allItems.map((item, index) => (
+  let modifiedRows = allItems.map((item)=>({
+    ...item,
+    title: (()=>{
+      if( item.title.length>50) {
+        return item.title.substr(0,47) + "..."
+      } else{
+        return item.title
+      }
+    })()
+  }));
+  /*{
+    var title;
+    if(item.title.length>50){
+      title = item.title.substr(0,47) + "..."
+    }
+    item.title = title;
+    return item;
+  })*/
+  let rows = modifiedRows.map((item, index) => (
     <tr key={item.id} scope="row">
       <td><time>{item.created.split('T')[0]}</time></td>
-      <td><a href={item.url}>{item.title}</a></td>
+      <td><a href={item.url} hint="test">{item.title}</a></td>
       <td><ItemLinkElement element="author" item={item}></ItemLinkElement></td>
     </tr>
   ))
   return (
-    <div>
+    <div className="results">
       {searchForm}
       <table className="table table-hover">
         <thead>
